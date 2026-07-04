@@ -1,3 +1,31 @@
+# Base image
+FROM ubuntu:18.04
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip && \
+    apt-get clean
+
+# Create working directory
+WORKDIR /app
+
+# Copy application files
+COPY service/ /app/service
+COPY requirements.txt /app/
+
+# Install Python dependencies
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Create non-root user
+RUN useradd -m appuser
+USER appuser
+
+# Expose service port
+EXPOSE 8080
+
+# Command to run the service
+CMD ["python3", "service/server.py"]
+
 # The Skills Network Cloud IDE uses Ubuntu 18.04 :(
 FROM ubuntu:18.04
 
